@@ -9,8 +9,8 @@ VENV_ACTIVATE = $(VENV_DIR)/bin/activate
 VENV_RUN = . $(VENV_ACTIVATE)
 
 # Application path
-APP_ROOT_PATH := ./sdk
-UNIT_TESTS_PATH := ./tests/unit
+APP_ROOT_PATH := ./code/braze
+UNIT_TESTS_PATH := ./code/tests/unit
 
 
 usage:    ## Show this help
@@ -28,10 +28,27 @@ venv: $(VENV_ACTIVATE)    ## Create a new (empty) dev virtual environment
 
 # Install ONLY dev libraries
 install: venv    ## Install all dependencies for dev environment
-	$(VENV_RUN); $(PIP_CMD) install -r ${APP_ROOT_PATH}/requirements.txt
-	$(VENV_RUN); $(PIP_CMD) install -r ${UNIT_TESTS_PATH}/requirements.txt
+	$(VENV_RUN); $(PIP_CMD) install -r requirements-dev.txt
+	$(VENV_RUN); $(PIP_CMD) install -r requirements-test.txt
 
 
 tests-unit: venv    ## Run the unit tests
 	$(VENV_RUN); export PYTHONPATH=${APP_ROOT_PATH} \
 	&& pytest --cov-report term-missing --cov-config=.coveragerc --cov=${APP_ROOT_PATH} ${UNIT_TESTS_PATH} -s -vv
+
+
+clean:    ## Clean up (python dependencies, downloaded infrastructure code)
+	rm -f .coverage
+	rm -rf .filesystem
+	rm -rf build/
+	rm -rf dist/
+	rm -rf *.egg-info
+	rm -rf $(VENV_DIR)
+
+
+clean-dist:    ## Clean up python distribution directories
+	rm -rf dist/ build/
+	rm -rf *.egg-info
+
+
+.PHONY: usage install tests-unit clean clean-dist

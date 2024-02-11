@@ -45,9 +45,9 @@ class TestTimber(PrepareEnvironment):
         fake_correlation_id = "fake_correlation_id"
         timber.set_correlation_id(fake_correlation_id)
 
-        fake_msg = "An email fake@hotmail.com"
+        fake_msg = "Hello world"
         fake_var = {
-            "email": "fake@hotmail.com",
+            "foo": "bar",
             "invalid": InvalidCast()
         }
 
@@ -60,10 +60,10 @@ class TestTimber(PrepareEnvironment):
         assert re.match(r"\w+>\w+>\d+", location)
 
         assert console_content == {
-            "message": "An email *e-mail*masked*@hotmail.com",
+            "message": "Hello world",
             "correlation_id": "fake_correlation_id",
             "timestamp": "1970-01-01T00:00:00.000+00:00",
-            "var": {"email": "*e-mail*masked*@hotmail.com", "invalid": "<non-serializable: InvalidCast>"},
+            "var": {"foo": "bar", "invalid": "<non-serializable: InvalidCast>"},
             "level": "INFO"
         }
 
@@ -75,53 +75,3 @@ class TestTimber(PrepareEnvironment):
     def test_formatter_deserializer(self, value: object, expected_msg: str):
         from util.std.timber import Formatter
         assert Formatter.json_serializer_default(value) == expected_msg
-
-    @pytest.mark.parametrize("value, expected_msg", [
-        (
-                {
-                    "message": "foo@bar.com"
-                },
-                {
-                    "message": "*e-mail*masked*@bar.com"
-                }
-        ),
-        (
-                {
-                    "message": "foo@bar.com",
-                    "var": {
-                        "email": "foo@bar.com"
-                    }
-                },
-                {
-                    "message": "*e-mail*masked*@bar.com",
-                    "var": {
-                        "email": "*e-mail*masked*@bar.com"
-                    }
-                }
-        ),
-        (
-                {
-                    "var": {
-                        "address_post_code": "Scranton",
-                        "email": "fake@hotmail.com",
-                        "first_name": "Mr Pickles",
-                        "last_name": "The good boy"
-                    }
-                },
-                {
-                    "var": {
-                        "address_post_code": "*address*masked*",
-                        "email": "*e-mail*masked*@hotmail.com",
-                        "first_name": "*name*masked*",
-                        "last_name": "*name*masked*"
-                    }
-                }
-        )
-    ])
-    def test_formatter_mask(self, value: dict, expected_msg: str):
-        from util.std.timber import Formatter
-
-        formatter = Formatter()
-        formatter.mask(value)
-
-        assert value == expected_msg

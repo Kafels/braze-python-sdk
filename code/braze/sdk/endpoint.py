@@ -1,85 +1,82 @@
 from __future__ import annotations
 
 import functools
-from typing import (
-    TYPE_CHECKING,
-    TypeVar
-)
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .main import Braze
+    from . import Braze
 
 __all__ = [
-    "Endpoint",
     "Users"
 ]
 
-import requests
-
-from .request import Api
-
-api = Api()
-DictT = TypeVar("DictT", bound=dict)
+from .shared import create_generic_endpoint
 
 
 class Endpoint:
 
-    def __init__(self, *, braze: Braze):
+    def __init__(self, braze: Braze):
         self.braze = braze
 
 
 class UsersAlias(Endpoint):
+    new = create_generic_endpoint(
+        doc="https://www.braze.com/docs/api/endpoints/user_data/post_user_alias/",
+        endpoint="/users/alias/new",
+        method="POST"
+    )
 
-    @api.inject_call(endpoint="/users/alias/new")
-    def new(
-            self,
-            content: DictT
-    ):
-        return functools.partial(
-            requests.post,
-            json=content
-        )
+    update = create_generic_endpoint(
+        doc="https://www.braze.com/docs/api/endpoints/user_data/post_users_alias_update/",
+        endpoint="/users/alias/update",
+        method="POST"
+    )
 
 
 class UsersExport(Endpoint):
+    global_control_group = create_generic_endpoint(
+        doc="https://www.braze.com/docs/api/endpoints/export/user_data/post_users_global_control_group/",
+        endpoint="/users/export/global_control_group",
+        method="POST"
+    )
 
-    @api.inject_call(endpoint="/users/export/ids")
-    def ids(
-            self,
-            content: DictT
-    ):
-        return functools.partial(
-            requests.post,
-            json=content
-        )
+    ids = create_generic_endpoint(
+        doc="https://www.braze.com/docs/api/endpoints/export/user_data/post_users_identifier/",
+        endpoint="/users/export/ids",
+        method="POST"
+    )
+
+    segment = create_generic_endpoint(
+        doc="https://www.braze.com/docs/api/endpoints/export/user_data/post_users_segment/",
+        endpoint="/users/export/segment",
+        method="POST"
+    )
 
 
 class Users(Endpoint):
 
     @functools.cached_property
     def alias(self):
-        return UsersAlias(braze=self.braze)
+        return UsersAlias(self.braze)
 
     @functools.cached_property
     def export(self):
-        return UsersExport(braze=self.braze)
+        return UsersExport(self.braze)
 
-    @api.inject_call(endpoint="/users/delete")
-    def delete(
-            self,
-            content: DictT
-    ):
-        return functools.partial(
-            requests.post,
-            json=content
-        )
+    delete = create_generic_endpoint(
+        doc="https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/",
+        endpoint="/users/delete",
+        method="POST"
+    )
 
-    @api.inject_call(endpoint="/users/track")
-    def track(
-            self,
-            content: DictT
-    ):
-        return functools.partial(
-            requests.post,
-            json=content
-        )
+    identify = create_generic_endpoint(
+        doc="https://www.braze.com/docs/api/endpoints/user_data/post_user_identify/",
+        endpoint="/users/identify",
+        method="POST"
+    )
+
+    track = create_generic_endpoint(
+        doc="https://www.braze.com/docs/api/endpoints/user_data/post_user_track/",
+        endpoint="/users/track",
+        method="POST"
+    )

@@ -45,16 +45,25 @@ class PrepareEnvironment:
 
 class TestEndpoint(PrepareEnvironment):
 
-    @patch("sdk.endpoint.requests.request", return_value=FAKE_RESPONSE)
+    @pytest.fixture
+    def braze(self):
+        from sdk import Braze
+        return Braze(
+            token=BRAZE_TOKEN,
+            host=BRAZE_HOST,
+            timeout=BRAZE_TIMEOUT
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
     @patch("sdk.shared.decorator.BearerAuth")
     def test_users_alias_new(self,
                              bearer_auth: MagicMock,
-                             requests__post: MagicMock,
+                             requests__request: MagicMock,
                              braze):
         content = MagicMock()
         braze.users.alias.new(content=content)
 
-        requests__post.assert_called_once_with(
+        requests__request.assert_called_once_with(
             method="POST",
             json=content,
             auth=bearer_auth.return_value,
@@ -62,27 +71,121 @@ class TestEndpoint(PrepareEnvironment):
             timeout=BRAZE_TIMEOUT
         )
 
-    @patch("sdk.endpoint.requests.post", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
+    def test_users_alias_new(self,
+                             bearer_auth: MagicMock,
+                             requests__request: MagicMock,
+                             braze):
+        content = MagicMock()
+        braze.users.alias.update(content=content)
+
+        requests__request.assert_called_once_with(
+            method="POST",
+            json=content,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/users/alias/update",
+            timeout=BRAZE_TIMEOUT
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
+    def test_users_export_global_control_group(self,
+                                               bearer_auth: MagicMock,
+                                               requests__request: MagicMock,
+                                               braze):
+        content = MagicMock()
+        braze.users.export.global_control_group(content=content)
+
+        requests__request.assert_called_once_with(
+            method="POST",
+            json=content,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/users/export/global_control_group",
+            timeout=BRAZE_TIMEOUT
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
     @patch("sdk.shared.decorator.BearerAuth")
     def test_users_export_ids(self,
                               bearer_auth: MagicMock,
-                              requests__post: MagicMock,
+                              requests__request: MagicMock,
                               braze):
         content = MagicMock()
         braze.users.export.ids(content=content)
 
-        requests__post.assert_called_once_with(
+        requests__request.assert_called_once_with(
+            method="POST",
             json=content,
             auth=bearer_auth.return_value,
             url=F"{BRAZE_HOST}/users/export/ids",
             timeout=BRAZE_TIMEOUT
         )
 
-    @pytest.fixture
-    def braze(self):
-        from sdk import Braze
-        return Braze(
-            token=BRAZE_TOKEN,
-            host=BRAZE_HOST,
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
+    def test_users_export_segment(self,
+                                  bearer_auth: MagicMock,
+                                  requests__request: MagicMock,
+                                  braze):
+        content = MagicMock()
+        braze.users.export.segment(content=content)
+
+        requests__request.assert_called_once_with(
+            method="POST",
+            json=content,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/users/export/segment",
+            timeout=BRAZE_TIMEOUT
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
+    def test_users_delete(self,
+                          bearer_auth: MagicMock,
+                          requests__request: MagicMock,
+                          braze):
+        content = MagicMock()
+        braze.users.delete(content=content)
+
+        requests__request.assert_called_once_with(
+            method="POST",
+            json=content,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/users/delete",
+            timeout=BRAZE_TIMEOUT
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
+    def test_users_identify(self,
+                            bearer_auth: MagicMock,
+                            requests__request: MagicMock,
+                            braze):
+        content = MagicMock()
+        braze.users.identify(content=content)
+
+        requests__request.assert_called_once_with(
+            method="POST",
+            json=content,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/users/identify",
+            timeout=BRAZE_TIMEOUT
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
+    def test_users_track(self,
+                         bearer_auth: MagicMock,
+                         requests__request: MagicMock,
+                         braze):
+        content = MagicMock()
+        braze.users.track(content=content)
+
+        requests__request.assert_called_once_with(
+            method="POST",
+            json=content,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/users/track",
             timeout=BRAZE_TIMEOUT
         )
