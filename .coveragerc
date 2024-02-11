@@ -1,0 +1,4 @@
+[run]
+omit =
+    # omit deprecated TIBCO event parsers
+    # app/utils/customerParser.py
