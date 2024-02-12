@@ -1,5 +1,5 @@
 __all__ = [
-    "create_generic_endpoint"
+    "prepare_request"
 ]
 
 import functools
@@ -7,27 +7,17 @@ from typing import Optional
 
 import requests
 
-from shared.types import AnyCallableT, DictT
-from util import Timber
-from .decorator import api
-
-timber = Timber(service="functions")
+from shared.types import DictT
 
 
-def create_generic_endpoint(
-        function: Optional[AnyCallableT] = None,
-        doc: Optional[str] = None,
-        endpoint: Optional[str] = None,
+def prepare_request(
+        content: DictT,
         method: Optional[str] = "GET",
+        **kwargs
 ):
-    @api.inject_call(endpoint=endpoint)
-    @functools.wraps(function)
-    def impl(_, content: DictT):
-        impl.__doc__ = F"Documentation: {doc}"
-        return functools.partial(
-            requests.request,
-            method=method,
-            json=content
-        )
-
-    return impl
+    return functools.partial(
+        requests.request,
+        method=method,
+        json=content,
+        **kwargs
+    )

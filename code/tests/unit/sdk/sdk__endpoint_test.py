@@ -7,9 +7,8 @@ from mock import (
     patch
 )
 
-BRAZE_TOKEN = "token_value"
 BRAZE_HOST = "http://localhost:80"
-BRAZE_TIMEOUT = 10.0
+BRAZE_TOKEN = "token_value"
 
 FAKE_RESPONSE = MagicMock(
     status_code=200,
@@ -49,9 +48,8 @@ class TestEndpoint(PrepareEnvironment):
     def braze(self):
         from sdk import Braze
         return Braze(
-            token=BRAZE_TOKEN,
             host=BRAZE_HOST,
-            timeout=BRAZE_TIMEOUT
+            token=BRAZE_TOKEN
         )
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
@@ -67,16 +65,15 @@ class TestEndpoint(PrepareEnvironment):
             method="POST",
             json=content,
             auth=bearer_auth.return_value,
-            url=F"{BRAZE_HOST}/users/alias/new",
-            timeout=BRAZE_TIMEOUT
+            url=F"{BRAZE_HOST}/users/alias/new"
         )
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
     @patch("sdk.shared.decorator.BearerAuth")
-    def test_users_alias_new(self,
-                             bearer_auth: MagicMock,
-                             requests__request: MagicMock,
-                             braze):
+    def test_users_alias_update(self,
+                                bearer_auth: MagicMock,
+                                requests__request: MagicMock,
+                                braze):
         content = MagicMock()
         braze.users.alias.update(content=content)
 
@@ -84,8 +81,7 @@ class TestEndpoint(PrepareEnvironment):
             method="POST",
             json=content,
             auth=bearer_auth.return_value,
-            url=F"{BRAZE_HOST}/users/alias/update",
-            timeout=BRAZE_TIMEOUT
+            url=F"{BRAZE_HOST}/users/alias/update"
         )
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
@@ -101,8 +97,7 @@ class TestEndpoint(PrepareEnvironment):
             method="POST",
             json=content,
             auth=bearer_auth.return_value,
-            url=F"{BRAZE_HOST}/users/export/global_control_group",
-            timeout=BRAZE_TIMEOUT
+            url=F"{BRAZE_HOST}/users/export/global_control_group"
         )
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
@@ -118,8 +113,7 @@ class TestEndpoint(PrepareEnvironment):
             method="POST",
             json=content,
             auth=bearer_auth.return_value,
-            url=F"{BRAZE_HOST}/users/export/ids",
-            timeout=BRAZE_TIMEOUT
+            url=F"{BRAZE_HOST}/users/export/ids"
         )
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
@@ -135,8 +129,7 @@ class TestEndpoint(PrepareEnvironment):
             method="POST",
             json=content,
             auth=bearer_auth.return_value,
-            url=F"{BRAZE_HOST}/users/export/segment",
-            timeout=BRAZE_TIMEOUT
+            url=F"{BRAZE_HOST}/users/export/segment"
         )
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
@@ -152,8 +145,7 @@ class TestEndpoint(PrepareEnvironment):
             method="POST",
             json=content,
             auth=bearer_auth.return_value,
-            url=F"{BRAZE_HOST}/users/delete",
-            timeout=BRAZE_TIMEOUT
+            url=F"{BRAZE_HOST}/users/delete"
         )
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
@@ -169,8 +161,7 @@ class TestEndpoint(PrepareEnvironment):
             method="POST",
             json=content,
             auth=bearer_auth.return_value,
-            url=F"{BRAZE_HOST}/users/identify",
-            timeout=BRAZE_TIMEOUT
+            url=F"{BRAZE_HOST}/users/identify"
         )
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
@@ -186,6 +177,5 @@ class TestEndpoint(PrepareEnvironment):
             method="POST",
             json=content,
             auth=bearer_auth.return_value,
-            url=F"{BRAZE_HOST}/users/track",
-            timeout=BRAZE_TIMEOUT
+            url=F"{BRAZE_HOST}/users/track"
         )

@@ -2,9 +2,8 @@ from mock import (
     patch
 )
 
-BRAZE_TOKEN = "token_value"
 BRAZE_HOST = "http://localhost:80"
-BRAZE_TIMEOUT = 10.0
+BRAZE_TOKEN = "token_value"
 
 
 class PrepareEnvironment:
@@ -38,23 +37,20 @@ class TestBraze(PrepareEnvironment):
         from sdk import Braze
 
         braze = Braze(
-            token=BRAZE_TOKEN,
             host=BRAZE_HOST,
-            timeout=BRAZE_TIMEOUT
+            token=BRAZE_TOKEN
         )
 
         assert getattr(braze, "token") == BRAZE_TOKEN
         assert getattr(braze, "host") == BRAZE_HOST
-        assert getattr(braze, "timeout") == BRAZE_TIMEOUT
 
     @patch("sdk.Users")
     def test_user(self, users):
         from sdk import Braze
 
         braze = Braze(
-            token=BRAZE_TOKEN,
             host=BRAZE_HOST,
-            timeout=BRAZE_TIMEOUT
+            token=BRAZE_TOKEN
         )
 
         assert braze.users == users.return_value

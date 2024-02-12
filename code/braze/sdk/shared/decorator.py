@@ -6,7 +6,7 @@ from typing import (
 )
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .endpoint import Endpoint
+    from ..endpoint import Endpoint
 
 __all__ = [
     "api"
@@ -44,8 +44,7 @@ class Api:
             try:
                 callable_request: functools.partial = function(this, *args, **kwargs)
                 res: Response = callable_request(auth=BearerAuth(this.braze.token),
-                                                 url=F"{this.braze.host}{endpoint}",
-                                                 timeout=this.braze.timeout)
+                                                 url=F"{this.braze.host}{endpoint}")
 
                 self.timber.debug("API response", var={
                     "status_code": res.status_code,
