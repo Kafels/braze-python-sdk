@@ -7,8 +7,16 @@ if TYPE_CHECKING:  # pragma: no cover
     from . import Braze
 
 __all__ = [
+    "ContentBlocks",
     "Users"
 ]
+
+from pydantic import validate_call
+
+from .validators import (
+    ContentBlocksListParams,
+    ContentBlocksInfoParams
+)
 
 from .shared import (
     api,
@@ -21,6 +29,154 @@ class Endpoint:
 
     def __init__(self, braze: Braze):
         self.braze = braze
+
+
+class ContentBlocks(Endpoint):
+
+    @api.inject_call(endpoint="/content_blocks/list")
+    @validate_call
+    def ls(
+            self,
+            params: ContentBlocksListParams,
+            **kwargs
+    ) -> DictT:
+        """Documentation: https://www.braze.com/docs/api/endpoints/templates/content_blocks_templates/get_list_email_content_blocks/
+
+        Parameters
+        ----------
+        params:
+            - modified_after, Optional, String in ISO-8601 format
+            - modified_before, Optional, String in ISO-8601 format
+            - limit, Optional, Positive Number
+            - offset, Optional, Positive Number
+
+        Returns
+        -------
+        {
+          "count": "integer",
+          "content_blocks": [
+            {
+              "content_block_id": (string) the Content Block identifier,
+              "name": (string) the name of the Content Block,
+              "content_type": (string) the content type, html or text,
+              "liquid_tag": (string) the Liquid tags,
+              "inclusion_count" : (integer) the inclusion count,
+              "created_at": (string) The time the Content Block was created in ISO 8601,
+              "last_edited": (string) The time the Content Block was last edited in ISO 8601,
+              "tags": (array) An array of tags formatted as strings,
+            }
+          ]
+        }
+        """
+        return prepare_request(
+            params=params,
+            **kwargs
+        )
+
+    @api.inject_call(endpoint="/content_blocks/info")
+    @validate_call
+    def info(
+            self,
+            params: ContentBlocksInfoParams,
+            **kwargs
+    ) -> DictT:
+        """Documentation: https://www.braze.com/docs/api/endpoints/templates/content_blocks_templates/get_see_email_content_blocks_information/
+
+        Parameters
+        ----------
+        params:
+            - modified_after, Optional, String in ISO-8601 format
+            - modified_before, Optional, String in ISO-8601 format
+            - limit, Optional, Positive Number
+            - offset, Optional, Positive Number
+
+        Returns
+        -------
+        {
+          "count": "integer",
+          "content_blocks": [
+            {
+              "content_block_id": (string) the Content Block identifier,
+              "name": (string) the name of the Content Block,
+              "content_type": (string) the content type, html or text,
+              "liquid_tag": (string) the Liquid tags,
+              "inclusion_count" : (integer) the inclusion count,
+              "created_at": (string) The time the Content Block was created in ISO 8601,
+              "last_edited": (string) The time the Content Block was last edited in ISO 8601,
+              "tags": (array) An array of tags formatted as strings,
+            }
+          ]
+        }
+        """
+        return prepare_request(
+            params=params,
+            **kwargs
+        )
+
+    @api.inject_call(endpoint="/content_blocks/create")
+    def create(
+            self,
+            content: DictT,
+            **kwargs
+    ) -> DictT:
+        """Documentation: https://www.braze.com/docs/api/endpoints/templates/content_blocks_templates/post_create_email_content_block/
+
+        Parameters
+        ----------
+        content: {
+          "name": (required, string) Must be less than 100 characters,
+          "description": (optional, string) The description of the Content Block. Must be less than 250 character,
+          "content": (required, string) HTML or text content within Content Block,
+          "state": (optional, string) Choose `active` or `draft`. Defaults to `active` if not specified,
+          "tags": (optional, array of strings) Tags must already exist
+        }
+
+        Returns
+        -------
+        {
+          "content_block_id": (string) Your newly generated block id,
+          "liquid_tag": (string) The generated block tag from the Content Block name,
+          "created_at": (string) The time the Content Block was created in ISO 8601,
+          "message": "success"
+        }
+        """
+        return prepare_request(
+            json=content,
+            **kwargs
+        )
+
+    @api.inject_call(endpoint="/content_blocks/update")
+    def update(
+            self,
+            content: DictT,
+            **kwargs
+    ) -> DictT:
+        """Documentation: https://www.braze.com/docs/api/endpoints/templates/content_blocks_templates/post_update_content_block/
+
+        Parameters
+        ----------
+        content: {
+          "content_block_id" : (required, string) Content Block's API identifier.
+          "name": (optional, string) Must be less than 100 characters,
+          "description": (optional, string) The description of the Content Block. Must be less than 250 character,
+          "content": (optional, string) HTML or text content within Content Block,
+          "state": (optional, string) Choose `active` or `draft`. Defaults to `active` if not specified,
+          "tags": (optional, array of strings) Tags must already exist
+        }
+
+        Returns
+        -------
+        {
+          "content_block_id": (string) Your newly generated block id,
+          "liquid_tag": (string) The generated block tag from the Content Block name,
+          "created_at": (string) The time the Content Block was created in ISO 8601,
+          "message": "success"
+        }
+        """
+        return prepare_request(
+            json=content,
+            **kwargs
+        )
 
 
 class UsersAlias(Endpoint):
@@ -48,7 +204,7 @@ class UsersAlias(Endpoint):
         }
         """
         return prepare_request(
-            content=content,
+            json=content,
             method="POST",
             **kwargs
         )
@@ -73,7 +229,7 @@ class UsersAlias(Endpoint):
         Non-specified in their documentation
         """
         return prepare_request(
-            content=content,
+            json=content,
             method="POST",
             **kwargs
         )
@@ -107,7 +263,7 @@ class UsersExport(Endpoint):
         }
         """
         return prepare_request(
-            content=content,
+            json=content,
             method="POST",
             **kwargs
         )
@@ -142,7 +298,7 @@ class UsersExport(Endpoint):
         }
         """
         return prepare_request(
-            content=content,
+            json=content,
             method="POST",
             **kwargs
         )
@@ -173,7 +329,7 @@ class UsersExport(Endpoint):
         }
         """
         return prepare_request(
-            content=content,
+            json=content,
             method="POST",
             **kwargs
         )
@@ -212,7 +368,7 @@ class Users(Endpoint):
         }
         """
         return prepare_request(
-            content=content,
+            json=content,
             method="POST",
             **kwargs
         )
@@ -240,7 +396,33 @@ class Users(Endpoint):
         }
         """
         return prepare_request(
-            content=content,
+            json=content,
+            method="POST",
+            **kwargs
+        )
+
+    @api.inject_call(endpoint="/users/merge")
+    def merge(
+            self,
+            content: DictT,
+            **kwargs
+    ) -> DictT:
+        """Documentation: https://www.braze.com/docs/api/endpoints/user_data/post_users_merge/
+
+        Parameters
+        ----------
+        content: {
+          "merge_updates" : (required, array of objects)
+        }
+
+        Returns
+        -------
+        {
+          "message": "success"
+        }
+        """
+        return prepare_request(
+            json=content,
             method="POST",
             **kwargs
         )
@@ -284,7 +466,7 @@ class Users(Endpoint):
         }
         """
         return prepare_request(
-            content=content,
+            json=content,
             method="POST",
             **kwargs
         )
