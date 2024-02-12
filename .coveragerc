@@ -1,2 +1,3 @@
 [run]
 omit =
+    code/braze/__init__.py

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "braze-sdk"
+version = "1.0.0"
+authors = [
+    { name = "Marcelo Kafels" },
+]
+description = "Creates a SDK for Braze platform"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "aws-lambda-powertools>=2.33.1",
+    "jmespath>=1.0.1",
+    "pydantic>=2.6.1",
+    "requests>=2.31.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/Kafels/braze-python-sdk/"
+Issues = "https://github.com/Kafels/braze-python-sdk/issues"
+
+[tool.setuptools.packages.find]
+where = ["code"]
+include = ["braze*"]
+exclude = ["tests*"]
+namespaces = false
