@@ -1,9 +1,9 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=69.1.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "braze-sdk"
+name = "braze-client-sdk"
 version = "1.0.0"
 authors = [
     { name = "Marcelo Kafels" },
@@ -16,13 +16,14 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-
+keywords = ["braze", "sdk"]
 dependencies = [
-    "aws-lambda-powertools>=2.33.1",
-    "jmespath>=1.0.1",
     "pydantic>=2.6.1",
     "requests>=2.31.0"
 ]
+
+[project.optional-dependencies]
+dev = ["mock", "pytest", "pytest-cov"]
 
 [project.urls]
 Homepage = "https://github.com/Kafels/braze-python-sdk/"

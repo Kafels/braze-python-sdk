@@ -1,4 +1,0 @@
-aws-lambda-powertools==2.33.1
-jmespath==1.0.1
-pydantic==2.6.1
-requests==2.31.0
