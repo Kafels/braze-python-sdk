@@ -1,10 +1,13 @@
 from __future__ import annotations  # for Python 3.7–3.9
 
+from pydantic import Field
 from typing_extensions import (
+    Annotated,
     Dict,
+    Literal,
     List,
     NotRequired,
-    TypedDict, Literal
+    TypedDict
 )
 
 __all__ = [
@@ -27,7 +30,7 @@ class UsersIdentifyBody(TypedDict):
 
 
 class UsersMergeBody(TypedDict):
-    merge_updates: List[Dict]
+    merge_updates: Annotated[List[Dict], Field(min_length=1)]
 
 
 class UsersTrackBody(TypedDict):

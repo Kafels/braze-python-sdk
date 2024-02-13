@@ -19,7 +19,7 @@ __all__ = [
 class UsersExportGlobalControlGroupBody(TypedDict):
     callback_endpoint: NotRequired[str]
     fields_to_export: Annotated[List[str], Field(min_length=1)]
-    output_format: Literal["gzip", "zip"]
+    output_format: NotRequired[Literal["gzip", "zip"]]
 
 
 class UsersExportIdsBody(TypedDict):
@@ -36,4 +36,4 @@ class UsersExportSegmentBody(TypedDict):
     segment_id: str
     callback_endpoint: NotRequired[str]
     fields_to_export: Annotated[List[str], Field(min_length=1)]
-    output_format: Literal["gzip", "zip"]
+    output_format: NotRequired[Literal["gzip", "zip"]]

@@ -140,6 +140,7 @@ class ContentBlocks(Endpoint):
         """
         return prepare_request(
             json=content,
+            method="POST",
             **kwargs
         )
 
@@ -174,6 +175,7 @@ class ContentBlocks(Endpoint):
         """
         return prepare_request(
             json=content,
+            method="POST",
             **kwargs
         )
 

@@ -54,11 +54,75 @@ class TestEndpoint(PrepareEnvironment):
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
     @patch("sdk.shared.decorator.BearerAuth")
+    def test_content_blocks_list(self,
+                                 bearer_auth: MagicMock,
+                                 requests__request: MagicMock,
+                                 braze):
+        params = {}
+        braze.content_blocks.ls(params=params)
+
+        requests__request.assert_called_once_with(
+            method="GET",
+            params=params,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/content_blocks/list"
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
+    def test_content_blocks_info(self,
+                                 bearer_auth: MagicMock,
+                                 requests__request: MagicMock,
+                                 braze):
+        params = {"content_block_id": "value"}
+        braze.content_blocks.info(params=params)
+
+        requests__request.assert_called_once_with(
+            method="GET",
+            params=params,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/content_blocks/info"
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
+    def test_content_blocks_create(self,
+                                   bearer_auth: MagicMock,
+                                   requests__request: MagicMock,
+                                   braze):
+        content = {"name": "foobar", "content": "<span>Hello world</span>"}
+        braze.content_blocks.create(content=content)
+
+        requests__request.assert_called_once_with(
+            method="POST",
+            json=content,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/content_blocks/create"
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
+    def test_content_blocks_update(self,
+                                   bearer_auth: MagicMock,
+                                   requests__request: MagicMock,
+                                   braze):
+        content = {"content_block_id": "id"}
+        braze.content_blocks.update(content=content)
+
+        requests__request.assert_called_once_with(
+            method="POST",
+            json=content,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/content_blocks/update"
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
     def test_users_alias_new(self,
                              bearer_auth: MagicMock,
                              requests__request: MagicMock,
                              braze):
-        content = MagicMock()
+        content = {"user_aliases": [{}]}
         braze.users.alias.new(content=content)
 
         requests__request.assert_called_once_with(
@@ -74,7 +138,7 @@ class TestEndpoint(PrepareEnvironment):
                                 bearer_auth: MagicMock,
                                 requests__request: MagicMock,
                                 braze):
-        content = MagicMock()
+        content = {"alias_updates": [{}]}
         braze.users.alias.update(content=content)
 
         requests__request.assert_called_once_with(
@@ -90,7 +154,7 @@ class TestEndpoint(PrepareEnvironment):
                                                bearer_auth: MagicMock,
                                                requests__request: MagicMock,
                                                braze):
-        content = MagicMock()
+        content = {"fields_to_export": ["field_name"]}
         braze.users.export.global_control_group(content=content)
 
         requests__request.assert_called_once_with(
@@ -106,7 +170,7 @@ class TestEndpoint(PrepareEnvironment):
                               bearer_auth: MagicMock,
                               requests__request: MagicMock,
                               braze):
-        content = MagicMock()
+        content = {}
         braze.users.export.ids(content=content)
 
         requests__request.assert_called_once_with(
@@ -122,7 +186,7 @@ class TestEndpoint(PrepareEnvironment):
                                   bearer_auth: MagicMock,
                                   requests__request: MagicMock,
                                   braze):
-        content = MagicMock()
+        content = {"segment_id": "value", "fields_to_export": ["field_name"]}
         braze.users.export.segment(content=content)
 
         requests__request.assert_called_once_with(
@@ -138,7 +202,7 @@ class TestEndpoint(PrepareEnvironment):
                           bearer_auth: MagicMock,
                           requests__request: MagicMock,
                           braze):
-        content = MagicMock()
+        content = {}
         braze.users.delete(content=content)
 
         requests__request.assert_called_once_with(
@@ -154,7 +218,7 @@ class TestEndpoint(PrepareEnvironment):
                             bearer_auth: MagicMock,
                             requests__request: MagicMock,
                             braze):
-        content = MagicMock()
+        content = {"aliases_to_identify": [{}]}
         braze.users.identify(content=content)
 
         requests__request.assert_called_once_with(
@@ -166,11 +230,27 @@ class TestEndpoint(PrepareEnvironment):
 
     @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
     @patch("sdk.shared.decorator.BearerAuth")
+    def test_users_merge(self,
+                         bearer_auth: MagicMock,
+                         requests__request: MagicMock,
+                         braze):
+        content = {"merge_updates": [{}]}
+        braze.users.merge(content=content)
+
+        requests__request.assert_called_once_with(
+            method="POST",
+            json=content,
+            auth=bearer_auth.return_value,
+            url=F"{BRAZE_HOST}/users/merge"
+        )
+
+    @patch("sdk.shared.functions.requests.request", return_value=FAKE_RESPONSE)
+    @patch("sdk.shared.decorator.BearerAuth")
     def test_users_track(self,
                          bearer_auth: MagicMock,
                          requests__request: MagicMock,
                          braze):
-        content = MagicMock()
+        content = {}
         braze.users.track(content=content)
 
         requests__request.assert_called_once_with(
