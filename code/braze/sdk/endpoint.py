@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import functools
-from typing import TYPE_CHECKING
+from typing import (
+    Optional,
+    TYPE_CHECKING
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from . import Braze
@@ -13,10 +16,7 @@ __all__ = [
 
 from pydantic import validate_call
 
-from .validators import (
-    ContentBlocksListParams,
-    ContentBlocksInfoParams
-)
+from .validators import *
 
 from .shared import (
     api,
@@ -37,7 +37,7 @@ class ContentBlocks(Endpoint):
     @validate_call
     def ls(
             self,
-            params: ContentBlocksListParams,
+            params: Optional[ContentBlocksListParams] = None,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/templates/content_blocks_templates/get_list_email_content_blocks/
@@ -85,27 +85,25 @@ class ContentBlocks(Endpoint):
         Parameters
         ----------
         params:
-            - modified_after, Optional, String in ISO-8601 format
-            - modified_before, Optional, String in ISO-8601 format
-            - limit, Optional, Positive Number
-            - offset, Optional, Positive Number
+            - content_block_id, Required, The Content Block identifier.
+            - include_inclusion_data, Optional, When set to true, the API returns back the
+              Message Variation API identifier of campaigns and Canvases where this Content Block is included,
+              to be used in subsequent calls. The results exclude archived or deleted campaigns or Canvases.
 
         Returns
         -------
         {
-          "count": "integer",
-          "content_blocks": [
-            {
-              "content_block_id": (string) the Content Block identifier,
-              "name": (string) the name of the Content Block,
-              "content_type": (string) the content type, html or text,
-              "liquid_tag": (string) the Liquid tags,
-              "inclusion_count" : (integer) the inclusion count,
-              "created_at": (string) The time the Content Block was created in ISO 8601,
-              "last_edited": (string) The time the Content Block was last edited in ISO 8601,
-              "tags": (array) An array of tags formatted as strings,
-            }
-          ]
+          "content_block_id": (string) the Content Block identifier,
+          "name": (string) the name of the Content Block,
+          "content": (string) the content in the Content Block,
+          "description": (string) the Content Block description,
+          "content_type": (string) the content type, html or text,
+          "tags": (array) An array of tags formatted as strings,
+          "created_at": (string) The time the Content Block was created in ISO 8601,
+          "last_edited": (string) The time the Content Block was last edited in ISO 8601,
+          "inclusion_count" : (integer) the inclusion count,
+          "inclusion_data": (array) the inclusion data,
+          "message": "success",
         }
         """
         return prepare_request(
@@ -116,7 +114,7 @@ class ContentBlocks(Endpoint):
     @api.inject_call(endpoint="/content_blocks/create")
     def create(
             self,
-            content: DictT,
+            content: ContentBlocksCreateBody,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/templates/content_blocks_templates/post_create_email_content_block/
@@ -146,9 +144,10 @@ class ContentBlocks(Endpoint):
         )
 
     @api.inject_call(endpoint="/content_blocks/update")
+    @validate_call
     def update(
             self,
-            content: DictT,
+            content: ContentBlocksUpdateBody,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/templates/content_blocks_templates/post_update_content_block/
@@ -182,9 +181,10 @@ class ContentBlocks(Endpoint):
 class UsersAlias(Endpoint):
 
     @api.inject_call(endpoint="/users/alias/new")
+    @validate_call
     def new(
             self,
-            content: DictT,
+            content: UsersAliasNewBody,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/user_data/post_user_alias/
@@ -210,9 +210,10 @@ class UsersAlias(Endpoint):
         )
 
     @api.inject_call(endpoint="/users/alias/update")
+    @validate_call
     def update(
             self,
-            content: DictT,
+            content: UsersAliasUpdateBody,
             **kwargs
     ):
         """Documentation: https://www.braze.com/docs/api/endpoints/user_data/post_users_alias_update/
@@ -238,9 +239,10 @@ class UsersAlias(Endpoint):
 class UsersExport(Endpoint):
 
     @api.inject_call(endpoint="/users/export/global_control_group")
+    @validate_call
     def global_control_group(
             self,
-            content: DictT,
+            content: UsersExportGlobalControlGroupBody,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/export/user_data/post_users_global_control_group/
@@ -269,9 +271,10 @@ class UsersExport(Endpoint):
         )
 
     @api.inject_call(endpoint="/users/export/ids")
+    @validate_call
     def ids(
             self,
-            content: DictT,
+            content: Optional[UsersExportIdsBody] = None,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/export/user_data/post_users_identifier/
@@ -304,9 +307,10 @@ class UsersExport(Endpoint):
         )
 
     @api.inject_call(endpoint="/users/export/segment")
+    @validate_call
     def segment(
             self,
-            content: DictT,
+            content: UsersExportSegmentBody,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/export/user_data/post_users_segment/
@@ -346,9 +350,10 @@ class Users(Endpoint):
         return UsersExport(self.braze)
 
     @api.inject_call(endpoint="/users/delete")
+    @validate_call
     def delete(
             self,
-            content: DictT,
+            content: Optional[UsersDeleteBody] = None,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
@@ -374,9 +379,10 @@ class Users(Endpoint):
         )
 
     @api.inject_call(endpoint="/users/identify")
+    @validate_call
     def identify(
             self,
-            content: DictT,
+            content: UsersIdentifyBody,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/user_data/post_user_identify/
@@ -402,9 +408,10 @@ class Users(Endpoint):
         )
 
     @api.inject_call(endpoint="/users/merge")
+    @validate_call
     def merge(
             self,
-            content: DictT,
+            content: UsersMergeBody,
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/user_data/post_users_merge/
@@ -428,9 +435,10 @@ class Users(Endpoint):
         )
 
     @api.inject_call(endpoint="/users/track")
+    @validate_call
     def track(
             self,
-            content: DictT,
+            content: Optional[UsersTrackBody],
             **kwargs
     ) -> DictT:
         """Documentation: https://www.braze.com/docs/api/endpoints/user_data/post_user_track/
